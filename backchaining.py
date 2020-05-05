@@ -1,7 +1,35 @@
 """
+Task 1
 Parsing of Horn Clauses, and Reasoning using Back-Chaining
 """
 import sys
+
+"""
+Class Clause
+"""
+
+class clause(object):
+
+    #Constructor
+    def __init__(self, num):
+        self.num = name
+
+
+"""
+Class Literal
+"""
+
+class literal(object):
+
+    #Constructor
+    def __init__(self, name, polarity):
+        self.name = name
+        self.polarity = polarity
+
+
+"""
+Main
+"""
 
 #open read only file (read and write = "w+")
 
