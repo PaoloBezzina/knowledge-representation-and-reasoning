@@ -11,8 +11,10 @@ Class Clause
 class clause(object):
 
     #Constructor
-    def __init__(self, num):
-        self.num = name
+    def __init__(self, literals):
+        self.literals = literals
+
+
 
 
 """
@@ -22,17 +24,58 @@ Class Literal
 class literal(object):
 
     #Constructor
-    def __init__(self, name, polarity):
+    def __init__(self, name, negated):
         self.name = name
-        self.polarity = polarity
+        self.negated = negated
 
 
 """
 Main
 """
 
-#open read only file (read and write = "w+")
+#parsing kb
+def parseKB(kb):
+    
+    numOfClauses = len(kb)
+    print(numOfClauses)
 
+    clauseList = [None] * numOfClauses
+
+    for i in range(0,numOfClauses):
+        print(kb[i])
+        c = kb[i]
+        clause = parseClause(c)
+        clauseList[i] = clause
+
+    return clauseList
+
+
+def parseClause(c):
+
+    literalList = []
+
+    c = c[1:-1]
+
+    literals = c.split(",")
+
+    numOfLiterals = len(literals)
+    print(numOfLiterals)
+
+    for i in range(0, numOfLiterals):
+        if("!" in literals[i]):
+            literal.name = literals[i][1:]
+            literal.negated = True
+        else:
+            literal.name = literals[i]
+            literal.negated = False
+
+        literalList.append(literal)
+    
+    clause.literals = literalList
+
+    return clause
+
+#open read only file (read and write = "w+")
 print(f"Name of the script      : {sys.argv[0]=}")
 print(f"Arguments of the script : {sys.argv[1:]=}")
 
@@ -41,10 +84,10 @@ print(file)
 
 f= open("%s" %file[0],"r")
 
-
 kb = f.read().splitlines()
 
-print(kb)
+parseKB(kb)
+
 
 
 
