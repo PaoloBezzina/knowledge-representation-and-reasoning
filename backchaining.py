@@ -75,6 +75,12 @@ def parseClause(c):
 
     return clause
 
+def reasoning(clause):
+
+    
+
+
+
 #open read only file (read and write = "w+")
 print(f"Name of the script      : {sys.argv[0]=}")
 print(f"Arguments of the script : {sys.argv[1:]=}")
