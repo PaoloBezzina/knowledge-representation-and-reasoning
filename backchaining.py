@@ -14,7 +14,11 @@ class clause(object):
     def __init__(self, literals):
         self.literals = literals
 
+    def __str__(self):
+        return self.literals
 
+    def __repr__(self):
+        return ("{}".format(self.literals))
 
 
 """
@@ -28,9 +32,16 @@ class literal(object):
         self.name = name
         self.negated = negated
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
+
+
 
 """
-Main
+Data Parsing
 """
 
 #parsing kb
@@ -53,33 +64,55 @@ def parseKB(kb):
 def parseClause(c):
 
     literalList = []
-
+    
     c = c[1:-1]
 
     literals = c.split(",")
+    #print(literals) #outputs "['Male']" ie. array of literals
 
     numOfLiterals = len(literals)
     print(numOfLiterals)
 
     for i in range(0, numOfLiterals):
+
+        lit = literal("null", False)
+
+        print(literals[i]) #outputs "Male" ie.Outputs one literal from array of literals
         if("!" in literals[i]):
-            literal.name = literals[i][1:]
-            literal.negated = True
+            lit.name = literals[i][1:]
+            lit.negated = True
         else:
-            literal.name = literals[i]
-            literal.negated = False
+            lit.name = literals[i]
+            lit.negated = False
 
-        literalList.append(literal)
+        #print(lit) #outputs "<class '__main__.literal'>"
+        print(lit.name) #outputs "Male"
+        print(lit.negated)  #outputs "False"
+        literalList.append(lit)
     
-    clause.literals = literalList
+    cl = clause(literalList)
 
-    return clause
+    print(cl.literals)
 
-def reasoning(clause):
+    return cl
 
-    
+"""
+Backchaining
+"""
+
+def reasoning(c, Kb):
+    if len(c.literals) == 0:
+        return True
+    else:
+        for l in c.literals:
+            for c in Kb:
+                for i in range(0, )
+            
 
 
+"""
+Main
+"""
 
 #open read only file (read and write = "w+")
 print(f"Name of the script      : {sys.argv[0]=}")
@@ -92,8 +125,12 @@ f= open("%s" %file[0],"r")
 
 kb = f.read().splitlines()
 
-parseKB(kb)
+KnowledgeBase = parseKB(kb)
 
+print(KnowledgeBase)#temp
 
+query = input("Please input the query: ")
 
+query = parseClause(query)
 
+reasoning(query, KnowledgeBase)
