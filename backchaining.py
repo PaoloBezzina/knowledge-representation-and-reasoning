@@ -48,7 +48,7 @@ Data Parsing
 def parseKB(kb):
     
     numOfClauses = len(kb)
-    print(numOfClauses)
+    #print(numOfClauses)
 
     clauseList = [None] * numOfClauses
 
@@ -71,13 +71,13 @@ def parseClause(c):
     #print(literals) #outputs "['Male']" ie. array of literals
 
     numOfLiterals = len(literals)
-    print(numOfLiterals)
+    #print(numOfLiterals)
 
     for i in range(0, numOfLiterals):
 
         lit = literal("null", False)
 
-        print(literals[i]) #outputs "Male" ie.Outputs one literal from array of literals
+        #print(literals[i]) #outputs "Male" ie.Outputs one literal from array of literals
         if("!" in literals[i]):
             lit.name = literals[i][1:]
             lit.negated = True
@@ -86,13 +86,13 @@ def parseClause(c):
             lit.negated = False
 
         #print(lit) #outputs "<class '__main__.literal'>"
-        print(lit.name) #outputs "Male"
-        print(lit.negated)  #outputs "False"
+        #print(lit.name) #outputs "Male"
+        #print(lit.negated)  #outputs "False"
         literalList.append(lit)
     
     cl = clause(literalList)
 
-    print(cl.literals)
+    #print(cl.literals)
 
     return cl
 
@@ -101,12 +101,35 @@ Backchaining
 """
 
 def reasoning(c, Kb):
+    recBc = False
     if len(c.literals) == 0:
         return True
     else:
         for l in c.literals:
             for c in Kb:
-                for i in range(0, )
+                for i in range(0, len(c.literals)):
+                    
+                    if (c.literals[i].name == l.name) and (c.literals[i].negated != l.negated):
+
+                        newlit = []
+                        j = 0
+
+                        while not c.literals[i] == c.literals[j]:
+                            
+                            newlit.append(c.literals[j])
+                            if newlit[j].negated:
+                                print("recursion !{}".format(newlit[j].name))
+                            else:
+                                print("recursion normal{}".format(newlit[j].name))
+
+                            j = j + 1
+
+                        newClause = clause(newlit)
+                        recBc = reasoning(newClause, Kb)
+
+                    if recBc == True:
+                        return True
+    return False
             
 
 
@@ -133,4 +156,9 @@ query = input("Please input the query: ")
 
 query = parseClause(query)
 
-reasoning(query, KnowledgeBase)
+res = reasoning(query, KnowledgeBase)
+
+if res:
+    print("Query Succesfuly Solved")
+else:
+    print("Query has been unsuccessful")
