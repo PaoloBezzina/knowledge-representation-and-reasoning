@@ -54,9 +54,7 @@ def parseKB(kb):
 
     for i in range(0,numOfClauses):
         print(kb[i])
-        c = kb[i]
-        clause = parseClause(c)
-        clauseList[i] = clause
+        clauseList[i] = parseClause(kb[i])
 
     return clauseList
 

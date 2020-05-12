@@ -25,15 +25,15 @@ class concept(object):
 class edge(object):
 
     def __init__(self, superConcept, subConcept, polarity):
-        self.superConcept = superConcept
-        self.subConcept = subConcept
+        self.superConcept = concept(superConcept)
+        self.subConcept = concept(subConcept)
         self.polarity = polarity    #true = IS-A , false = IS-NOT-A
 
     def __str__(self):
-        return "Subconcept: {}, Superconcept: {}, Polarity {}".format(self.subConcept, self.superConcept, self.polarity)
+        return "Subconcept: {}, Polarity: {}, Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
 
     def __repr__(self):
-        return self.name
+        return "Subconcept: {}, Polarity: {}, Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
 
 
 class path(object):
@@ -58,15 +58,21 @@ class path(object):
 
 """
 Data Parsing
+
 """
+
+conceptList = []
+edgeList = []
+pathList = []
+
 def parseKb(kb):
 
     numofEdges = len(kb)
+    edgeList = [None] * numofEdges
 
     for i in range(0, numofEdges):
         print(kb[i])
-        parseEdge(kb[i])
-
+        edgeList[i] = parseEdge(kb[i])
 
 
 def parseEdge(e):
@@ -88,17 +94,34 @@ def parseEdge(e):
     else:
         print("error in Kb")
 
-    newEdge.subConcept = concepts[0]
-    newEdge.superConcept = concepts[1]
+    concept1 = parseConcept(concepts[0])
+    concept2 = parseConcept(concepts[1])
+
+    newEdge.subConcept = concept1
+    newEdge.superConcept = concept2
 
     print(newEdge)
+    print("\n")
+
+    edgeList.append(newEdge)
 
     return newEdge
 
+def parseConcept(c):
 
+    numOfConcepts = len(conceptList)
 
+    for i in range(0, numOfConcepts):
+        if c == conceptList[i].name:
+            print("existing concept found: {}".format(conceptList[i]))      
+            return conceptList[i]
+    
+    print("creating new concept")
+    temp = concept(c)
 
+    conceptList.append(temp)
 
+    return temp
 
 """
 Main
@@ -118,3 +141,10 @@ kb = f.read().splitlines()
 print(kb)
 
 parseKb(kb)
+
+print("\nConcepts:")
+print(conceptList)
+print("\nEdges:")
+print(edgeList)
+print("\nPaths:")
+print(pathList)
