@@ -14,12 +14,13 @@ class concept(object):
     #Constructor
     def __init__(self, name):
         self.name = name
+        self.outgoingEdges = []
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return self.name
+        return "{} has outgoing edges: {}".format(self.name, self.outgoingEdges)
 
 
 class edge(object):
@@ -74,6 +75,8 @@ def parseKb(kb):
         print(kb[i])
         edgeList[i] = parseEdge(kb[i])
 
+    checkOutgoingEdges()
+
 
 def parseEdge(e):
 
@@ -122,6 +125,22 @@ def parseConcept(c):
     conceptList.append(temp)
 
     return temp
+
+
+def checkOutgoingEdges():
+
+    numOfConcepts = len(conceptList)
+    numofEdges = len(edgeList)
+
+
+
+    for i in range(0, numOfConcepts):
+        for j in range(0, numofEdges):
+            if conceptList[i].name == edgeList[j].subConcept.name :
+
+                print("{} is an outgoing edge of {}".format(edgeList[j].superConcept.name, conceptList[i].name))
+
+                conceptList[i].outgoingEdges.append(edgeList[j].superConcept.name)
 
 """
 Main
