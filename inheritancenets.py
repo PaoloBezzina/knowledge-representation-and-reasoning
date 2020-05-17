@@ -31,22 +31,22 @@ class edge(object):
         self.polarity = polarity    #true = IS-A , false = IS-NOT-A
 
     def __str__(self):
-        return "Subconcept: {}, Polarity: {}, Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
+        return "Subconcept: {} - Polarity: {} - Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
 
     def __repr__(self):
-        return "Subconcept: {}, Polarity: {}, Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
+        return "Subconcept: {} - Polarity: {} - Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
 
 
 class path(object):
 
     def __init__(self, edges):
-        self.edges = edges
+        self.edges = [edges]
 
     def __str__(self):
         return self.edges
 
     def __repr__(self):
-        return self.edges
+        return ("{}".format(self.edges))
     
     def checkConcepts(self):
         max = len(self.edges)
@@ -69,13 +69,17 @@ pathList = []
 def parseKb(kb):
 
     numofEdges = len(kb)
-    edgeList = [None] * numofEdges
 
     for i in range(0, numofEdges):
         print(kb[i])
-        edgeList[i] = parseEdge(kb[i])
+        edgeList.append(parseEdge(kb[i]))
 
     checkOutgoingEdges()
+
+    print(edgeList)
+
+
+
 
 
 def parseEdge(e):
@@ -106,9 +110,9 @@ def parseEdge(e):
     print(newEdge)
     print("\n")
 
-    edgeList.append(newEdge)
-
     return newEdge
+
+
 
 def parseConcept(c):
 
@@ -127,6 +131,8 @@ def parseConcept(c):
     return temp
 
 
+
+
 def checkOutgoingEdges():
 
     numOfConcepts = len(conceptList)
@@ -141,6 +147,91 @@ def checkOutgoingEdges():
                 print("{} is an outgoing edge of {}".format(edgeList[j].superConcept.name, conceptList[i].name))
 
                 conceptList[i].outgoingEdges.append(edgeList[j].superConcept.name)
+
+
+"""
+def checkConcepts(self):
+        max = len(self.edges)
+        for i in range(0, max-1):
+            if(self.edges[i].superConcept == self.edges[i+1].subConcept):
+                print("valid edge pair")
+                pass
+            else:
+                print("invalid pair")
+
+
+
+def parsePaths():
+
+    for con in conceptList:
+
+        pe = []
+
+        for oe in con.outgoingEdges:
+            for e in edgeList:
+                if((oe == e.superConcept.name) and (con.name == e.subConcept.name)):
+
+                    print("{} , {}".format(oe, e.superConcept) )
+                    pe.append(e)
+
+            p = path(pe)            
+            pathList.append(p)
+
+"""
+
+def findPath(first, last):
+
+    pl = []
+
+    for e in edgeList:
+        if(e.subConcept.name == first.name):
+
+            p = path(e)
+            pl.append(p)
+
+    print(pl)
+    for p in pl:
+        if(p.edges[-1].polarity == False):
+            #path stops here since it cannot continue after Is-Not-A
+            print("False")
+            return False
+
+        print(p.edges[-1].superConcept)
+
+        if(p.edges[-1].superConcept == last):
+            #path stops here since we reached the end of the query
+            print("pass")
+            return True
+            
+        pn = []
+        for ed in edgeList:
+            if(p.edges[-1].superConcept == ed.subConcept):
+                print("found e")
+                pn.append(ed)
+        
+        if (len(pn) <= 0):
+            #delete the current path
+            pl.remove(pn)
+            #not sure if we should have return here
+        elif (len(pn) == 1):
+            #add this edge to the path
+            p.edges.append(pn)
+        elif (len(pn) > 1):
+            #copy path for each edge
+            #add each edge to the copy of the path
+            for em in pn:
+                temp = copy(p)
+                temp.edges.append(em)
+
+                print("temp")
+
+
+        #repeat
+                    
+
+
+
+        
 
 """
 Main
@@ -167,3 +258,10 @@ print("\nEdges:")
 print(edgeList)
 print("\nPaths:")
 print(pathList)
+
+q = input("Enter Query: ")
+query = parseEdge(q)
+
+findPath(query.subConcept, query.superConcept)
+
+
