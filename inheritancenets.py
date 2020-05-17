@@ -43,10 +43,11 @@ class path(object):
         self.edges = [edges]
 
     def __str__(self):
-        return self.edges
+        return ("{}".format(self.edges))
 
     def __repr__(self):
         return ("{}".format(self.edges))
+        #("{}".format(self.edges))
     
     def checkConcepts(self):
         max = len(self.edges)
@@ -71,15 +72,10 @@ def parseKb(kb):
     numofEdges = len(kb)
 
     for i in range(0, numofEdges):
-        print(kb[i])
+        #print(kb[i])
         edgeList.append(parseEdge(kb[i]))
 
     checkOutgoingEdges()
-
-    print(edgeList)
-
-
-
 
 
 def parseEdge(e):
@@ -107,8 +103,7 @@ def parseEdge(e):
     newEdge.subConcept = concept1
     newEdge.superConcept = concept2
 
-    print(newEdge)
-    print("\n")
+    #print(newEdge)
 
     return newEdge
 
@@ -120,10 +115,10 @@ def parseConcept(c):
 
     for i in range(0, numOfConcepts):
         if c == conceptList[i].name:
-            print("existing concept found: {}".format(conceptList[i]))      
+            #print("existing concept found: {}".format(conceptList[i]))      
             return conceptList[i]
     
-    print("creating new concept")
+    #print("creating new concept")
     temp = concept(c)
 
     conceptList.append(temp)
@@ -144,7 +139,7 @@ def checkOutgoingEdges():
         for j in range(0, numofEdges):
             if conceptList[i].name == edgeList[j].subConcept.name :
 
-                print("{} is an outgoing edge of {}".format(edgeList[j].superConcept.name, conceptList[i].name))
+                #print("{} is an outgoing edge of {}".format(edgeList[j].superConcept.name, conceptList[i].name))
 
                 conceptList[i].outgoingEdges.append(edgeList[j].superConcept.name)
 
@@ -182,51 +177,49 @@ def parsePaths():
 def findPath(first, last):
 
     pl = []
+    fpl = []
+
 
     for e in edgeList:
         if(e.subConcept.name == first.name):
 
             p = path(e)
+            print(p)
             pl.append(p)
 
     print(pl)
     for p in pl:
-        if(p.edges[-1].polarity == False):
-            #path stops here since it cannot continue after Is-Not-A
-            print("False")
-            return False
 
         print(p.edges[-1].superConcept)
 
         if(p.edges[-1].superConcept == last):
             #path stops here since we reached the end of the query
             print("pass")
-            return True
-            
-        pn = []
-        for ed in edgeList:
-            if(p.edges[-1].superConcept == ed.subConcept):
-                print("found e")
-                pn.append(ed)
+            fpl.append(p)
+
+        elif(p.edges[-1].polarity == True):
+
+            npl = findPath(p.edges[-1].superConcept, last)
+
+            #nahseb li problemi jibdew hawn
+
+            print("new path list:")
+            print(npl)
+
+
+            if(len(npl) > 1):
+                for np in npl:
+                    temp = copy(p)
+                    temp.edges.append(np)
+                    fpl.append(temp)
+                    print("temp")
+                    print(temp)
+
+
+        print("Current fpl")
+        print(fpl)
+        return fpl
         
-        if (len(pn) <= 0):
-            #delete the current path
-            pl.remove(pn)
-            #not sure if we should have return here
-        elif (len(pn) == 1):
-            #add this edge to the path
-            p.edges.append(pn)
-        elif (len(pn) > 1):
-            #copy path for each edge
-            #add each edge to the copy of the path
-            for em in pn:
-                temp = copy(p)
-                temp.edges.append(em)
-
-                print("temp")
-
-
-        #repeat
                     
 
 
@@ -262,6 +255,8 @@ print(pathList)
 q = input("Enter Query: ")
 query = parseEdge(q)
 
-findPath(query.subConcept, query.superConcept)
 
+pathlist = findPath(query.subConcept, query.superConcept)
+print("\nPaths:")
+print(pathList)
 
