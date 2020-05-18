@@ -144,80 +144,61 @@ def checkOutgoingEdges():
                 conceptList[i].outgoingEdges.append(edgeList[j].superConcept.name)
 
 
-"""
-def checkConcepts(self):
-        max = len(self.edges)
-        for i in range(0, max-1):
-            if(self.edges[i].superConcept == self.edges[i+1].subConcept):
-                print("valid edge pair")
-                pass
-            else:
-                print("invalid pair")
-
-
-
-def parsePaths():
-
-    for con in conceptList:
-
-        pe = []
-
-        for oe in con.outgoingEdges:
-            for e in edgeList:
-                if((oe == e.superConcept.name) and (con.name == e.subConcept.name)):
-
-                    print("{} , {}".format(oe, e.superConcept) )
-                    pe.append(e)
-
-            p = path(pe)            
-            pathList.append(p)
-
-"""
-
 def findPath(first, last):
 
     pl = []
     fpl = []
+    cfp = []
 
 
     for e in edgeList:
         if(e.subConcept.name == first.name):
 
             p = path(e)
+            print("path found")
             print(p)
             pl.append(p)
 
+    print("path list")
     print(pl)
     for p in pl:
 
-        print(p.edges[-1].superConcept)
+        print("\nNew Path Parse \n")
+        
+        curConcept = p.edges[-1].superConcept
+        curPolarity = p.edges[-1].polarity
 
-        if(p.edges[-1].superConcept == last):
+        print("curConcept:")
+        print(curConcept)
+
+
+        if(curConcept == last):
             #path stops here since we reached the end of the query
             print("pass")
+            print(p)
             fpl.append(p)
 
-        elif(p.edges[-1].polarity == True):
+        elif(curPolarity == True):
 
-            npl = findPath(p.edges[-1].superConcept, last)
+            npl = findPath(curConcept, last)
 
             #nahseb li problemi jibdew hawn
 
             print("new path list:")
             print(npl)
 
-
-            if(len(npl) > 1):
+            if(len(npl) >=1):
                 for np in npl:
-                    temp = copy(p)
-                    temp.edges.append(np)
-                    fpl.append(temp)
-                    print("temp")
-                    print(temp)
+                    cfp = p
+                    cfp.edges.append(np)
+                    print("Cfp is:")
+                    print(cfp)
+                    fpl.append(cfp)
 
 
         print("Current fpl")
         print(fpl)
+        pathList.append(fpl)
         return fpl
         
                     
@@ -256,7 +237,8 @@ q = input("Enter Query: ")
 query = parseEdge(q)
 
 
-pathlist = findPath(query.subConcept, query.superConcept)
+findPath(query.subConcept, query.superConcept)
 print("\nPaths:")
-print(pathList)
+for elem in pathList:
+        print (elem) 
 
