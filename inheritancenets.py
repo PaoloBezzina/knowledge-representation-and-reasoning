@@ -4,6 +4,7 @@ Construction and Reasoning with Inheritance Networks
 """
 
 import sys
+import copy
 
 """
 Class Sub-Concept
@@ -48,11 +49,12 @@ class path(object):
     def __repr__(self):
         return ("{}".format(self.edges))
         #("{}".format(self.edges))
-    
-    def checkConcepts(self):
-        max = len(self.edges)
+
+
+def checkConcepts(p):
+        max = len(p.edges)
         for i in range(0, max-1):
-            if(self.edges[i].superConcept == self.edges[i+1].subConcept):
+            if(p.edges[i].superConcept == p.edges[i+1].subConcept):
                 print("valid edge pair")
                 pass
             else:
@@ -66,6 +68,7 @@ Data Parsing
 conceptList = []
 edgeList = []
 pathList = []
+
 
 def parseKb(kb):
 
@@ -133,8 +136,6 @@ def checkOutgoingEdges():
     numOfConcepts = len(conceptList)
     numofEdges = len(edgeList)
 
-
-
     for i in range(0, numOfConcepts):
         for j in range(0, numofEdges):
             if conceptList[i].name == edgeList[j].subConcept.name :
@@ -143,16 +144,39 @@ def checkOutgoingEdges():
 
                 conceptList[i].outgoingEdges.append(edgeList[j].superConcept.name)
 
-
+"""
 def findPath(first, last):
 
     pl = []
     fpl = []
-    cfp = []
+
+    for c in conceptList:
+
+        if(c == last):
+            pl.append
+            print("reached end of query")
+            return pl
+        elif( c == first):
+            print("First is:")
+            print(c)
+
+            if(len(c.outgoingEdges) == 0):
+                print("concept has no outgoing edges")
+                return None
+            else:
+                for e in c.outgoingEdges:
+                    findPath(e, last)
+                    
+    return fpl
+"""
+def findPath(first, last):
+
+    pl = []
+    fpl = []
 
 
     for e in edgeList:
-        if(e.subConcept.name == first.name):
+        if(e.subConcept == first):
 
             p = path(e)
             print("path found")
@@ -161,15 +185,18 @@ def findPath(first, last):
 
     print("path list")
     print(pl)
+
     for p in pl:
 
-        print("\nNew Path Parse \n")
+        print("\nNew Path Parse")
+        print(p)
         
         curConcept = p.edges[-1].superConcept
         curPolarity = p.edges[-1].polarity
 
         print("curConcept:")
         print(curConcept)
+        print(curPolarity)
 
 
         if(curConcept == last):
@@ -177,6 +204,8 @@ def findPath(first, last):
             print("pass")
             print(p)
             fpl.append(p)
+
+            return fpl
 
         elif(curPolarity == True):
 
@@ -186,26 +215,29 @@ def findPath(first, last):
 
             print("new path list:")
             print(npl)
+            print(len(npl))
 
-            if(len(npl) >=1):
+            if(len(npl) == 0):
+                ("No edges found")
+                fpl.pop()
+            elif (len(npl) == 1):
+                print("One edge found")
+                p.edges.append(npl)
+                fpl.append(p)
+
+            elif(len(npl) > 1):
+                print("Multiple Edges Found")
                 for np in npl:
-                    cfp = p
+                    cfp = copy.deepcopy(p)
                     cfp.edges.append(np)
                     print("Cfp is:")
                     print(cfp)
                     fpl.append(cfp)
 
-
-        print("Current fpl")
-        print(fpl)
-        pathList.append(fpl)
-        return fpl
-        
-                    
-
-
-
-        
+    print("Current fpl")
+    print(fpl)
+    return fpl
+ 
 
 """
 Main
@@ -237,8 +269,8 @@ q = input("Enter Query: ")
 query = parseEdge(q)
 
 
-findPath(query.subConcept, query.superConcept)
+pathList = findPath(query.subConcept, query.superConcept)
 print("\nPaths:")
-for elem in pathList:
-        print (elem) 
 
+for p in pathList:
+    print(p)
