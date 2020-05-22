@@ -5,6 +5,7 @@ Construction and Reasoning with Inheritance Networks
 
 import sys
 import copy
+import itertools
 
 """
 Class Sub-Concept
@@ -35,7 +36,12 @@ class edge(object):
         return "Subconcept: {} - Polarity: {} - Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
 
     def __repr__(self):
-        return "Subconcept: {} - Polarity: {} - Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
+        if(self.polarity == True):
+            link = "IS-A"
+        else:
+            link = "IS-NOT-A"
+        return "{} {} {}".format(self.subConcept, link, self.superConcept)
+        #return "Subconcept: {} - Polarity: {} - Superconcept: {}".format(self.subConcept, self.polarity, self.superConcept)
 
 
 class path(object):
@@ -144,31 +150,8 @@ def checkOutgoingEdges():
 
                 conceptList[i].outgoingEdges.append(edgeList[j].superConcept.name)
 
-"""
-def findPath(first, last):
 
-    pl = []
-    fpl = []
 
-    for c in conceptList:
-
-        if(c == last):
-            pl.append
-            print("reached end of query")
-            return pl
-        elif( c == first):
-            print("First is:")
-            print(c)
-
-            if(len(c.outgoingEdges) == 0):
-                print("concept has no outgoing edges")
-                return None
-            else:
-                for e in c.outgoingEdges:
-                    findPath(e, last)
-                    
-    return fpl
-"""
 def findPath(first, last):
 
     pl = []
@@ -205,31 +188,25 @@ def findPath(first, last):
             print(p)
             fpl.append(p)
 
-            return fpl
-
         elif(curPolarity == True):
 
             npl = findPath(curConcept, last)
-
-            #nahseb li problemi jibdew hawn
 
             print("new path list:")
             print(npl)
             print(len(npl))
 
-            if(len(npl) == 0):
-                ("No edges found")
-                fpl.pop()
-            elif (len(npl) == 1):
+
+            if (len(npl) == 1):
                 print("One edge found")
-                p.edges.append(npl)
+                p.edges.extend(npl)
                 fpl.append(p)
 
             elif(len(npl) > 1):
                 print("Multiple Edges Found")
                 for np in npl:
                     cfp = copy.deepcopy(p)
-                    cfp.edges.append(np)
+                    cfp.edges.extend(np.edges)
                     print("Cfp is:")
                     print(cfp)
                     fpl.append(cfp)
@@ -237,8 +214,32 @@ def findPath(first, last):
     print("Current fpl")
     print(fpl)
     return fpl
- 
 
+def findShortestPath(pl):
+
+    numberOfPaths = len(pl)
+
+    for i in range(numberOfPaths):
+        for j in range(numberOfPaths-i-1):
+            if(len(pl[i].edges) > len(pl[j+1].edges)):
+                pl[i], pl[j+1] = pl[j+1],pl[i]
+
+    return pl[0]
+
+def inferentialDistance(pl):
+
+    pass
+
+#doesnt work
+def flattenList():
+
+    L = []
+    for obj in pathList:
+        L.extend(obj.edges)
+    #print(list(itertools.chain.from_iterable(p.edges for p in pathList)))
+
+
+    return L
 """
 Main
 """
@@ -271,6 +272,13 @@ query = parseEdge(q)
 
 pathList = findPath(query.subConcept, query.superConcept)
 print("\nPaths:")
-
 for p in pathList:
     print(p)
+
+print("\nShortest Path:")
+sp = findShortestPath(pathList)
+print(sp)
+
+print("\nInferential Distance:")
+id = inferentialDistance(pathList)
+print(id)
