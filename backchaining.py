@@ -115,10 +115,15 @@ def reasoning(c, Kb):
                         while not c.literals[i] == c.literals[j]:
                             
                             newlit.append(c.literals[j])
+
+                            """
+                            #un-comment this area to check which literals are being checked upon recursion
+
                             if newlit[j].negated:
                                 print("recursion !{}".format(newlit[j].name))
                             else:
                                 print("recursion normal{}".format(newlit[j].name))
+                            """
 
                             j = j + 1
 
@@ -136,8 +141,8 @@ Main
 """
 
 #open read only file (read and write = "w+")
-print(f"Name of the script      : {sys.argv[0]=}")
-print(f"Arguments of the script : {sys.argv[1:]=}")
+print(f"Script being run    : {sys.argv[0]=}")
+print(f"Knowledge Base      : {sys.argv[1:]=}")
 
 file = sys.argv[1:]
 print(file)
